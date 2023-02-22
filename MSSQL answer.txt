@@ -1,0 +1,18 @@
+Предлагаю вам 2 варианта решения:
+
+Используя Entity Framework Core:
+
+var result = _dbContext.Products
+    .SelectMany(p => p.ProductCategories.DefaultIfEmpty(),
+        	(p, c) => new { 
+				 ProductName = p.Name,
+				 CategoryName = c != null ? c.Category.Name : "Без категории"
+		     	      });
+________________________________________________________________
+
+Используя T-SQL (С возможностью использования в ADO.NET/Dapper):
+
+SELECT Products.Name, Categories.Name
+FROM Products
+LEFT JOIN ProductCategory ON Products.ProductID = ProductCategory.ProductID
+LEFT JOIN Categories ON ProductCategory.CategoryID = Categories.CategoryID
